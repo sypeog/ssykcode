@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>SSYK Code Finder</title>
+	<style>
+		body {
+			background-color: #000000;
+			color: #FFFFFF;
+			font-family: Arial, sans-serif;
+			text-align: center;
+		}
+
+		h1 {
+			font-size: 3em;
+			margin-top: 0;
+			margin-bottom: 30px;
+		}
+
+		#description {
+			width: 70%;
+			height: 300px;
+			margin: 0 auto;
+			display: block;
+			font-size: 1.2em;
+			resize: none;
+			padding: 10px;
+			border: none;
+			border-radius: 5px;
+			background-color: #262626;
+			color: #FFFFFF;
+			box-shadow: inset 0 0 5px #000000;
+		}
+
+		#get-ssyk-code {
+			background-color: #FFFFFF;
+			color: #000000;
+			font-size: 1.2em;
+			padding: 10px 20px;
+			border: none;
+			border-radius: 5px;
+			cursor: pointer;
+			margin-top: 20px;
+			display: block;
+			margin: 0 auto;
+			box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+			transition: background-color 0.2s ease-in-out;
+		}
+
+		#get-ssyk-code:hover {
+			background-color: #F0F0F0;
+		}
+
+		#result {
+			font-size: 1.2em;
+			margin-top: 30px;
+			display: none;
+			padding: 20px;
+			border-radius: 5px;
+			background-color: #FFFFFF;
+			color: #000000;
+			box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+		}
+
+	</style>
+</head>
+<body>
+	<h1>SSYK Code Finder</h1>
+	<textarea id="description" placeholder="Enter the job description"></textarea>
+	<button id="get-ssyk-code">Get SSYK Code</button>
+	<script src="https://cdn.jsdelivr.net/npm/@openai/api@0.6.0/dist/openai-api.min.js"></script>
+	<script>
+		const api_key = "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";
+		const endpoint = "https://api.openai.com/v1/engines/davinci-codex/completions";
+		const prompt = "Please give me the Swedish SSYK code for this job description:\n";
+
+		const descriptionTextarea = document.getElementById("description");
+		const getSSYKCodeButton = document.getElementById("get-ssyk-code");
+
+		getSSYKCodeButton.addEventListener("click", async () => {
+			const description = descriptionTextarea.value;
+			if (description.trim() === "") {
+				alert("Please enter a job description");
+				return;
+			}
+
+			const promptWithDescription = prompt + description;
+			const completions = await openai.complete({
+				engine: 'davinci-codex',
+				prompt: promptWithDescription,
+				maxTokens: 1024,
+				n: 1,
+				stop: "\n"
+			});
+
+			const ssykCode = completions.choices[0].text.trim();
+			if (ssykCode === "") {
+				alert("Sorry, we could not find an SSYK code for this job description");
+			} else {
+				alert(`The SSYK code for this job description is: ${ssykCode}`);
+			}
+		});
+
+		const openai = new OpenAI(api_key, endpoint);
+
+	</script>
+</body>
+</html>
