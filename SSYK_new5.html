@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>SSYK Code Finder</title>
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<style type="text/css">
+		#result-box {
+			margin-top: 30px;
+			padding: 10px;
+			border: 1px solid black;
+		}
+	</style>
+</head>
+<body>
+	<h1>SSYK Code Finder</h1>
+	<input type="text" id="job-input" placeholder="Job description">
+	<button onclick="getSSYKCode()">Get SSYK code</button>
+	<div id="result-box"></div>
+
+	<script type="text/javascript">
+		const apiKey = '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';
+
+		async function getSSYKCode() {
+			const jobDescription = document.getElementById('job-input').value;
+
+			try {
+				const response = await axios.post('https://api.openai.com/v1/completions', {
+					model: 'text-davinci-002',
+					prompt: `What Swedish SSYK is suitable for the job "${jobDescription}"?`,
+					max_tokens: 60,
+					n: 1,
+					stop: ['\n']
+				}, {
+					headers: {
+						'Authorization': `Bearer ${apiKey}`,
+						'Content-Type': 'application/json'
+					}
+				});
+
+				document.getElementById('result-box').innerText = response.data.choices[0].text.trim();
+			} catch (error) {
+				console.error(error);
+			}
+		}
+	</script>
+</body>
+</html>
